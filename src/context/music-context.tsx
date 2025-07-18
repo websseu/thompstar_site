@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, ReactNode } from 'react'
+import { YouTubePlayer } from 'react-youtube'
 
 // Song 타입 정의 (플레이리스트에 담길 곡 정보)
 export interface Song {
@@ -19,6 +20,9 @@ interface MusicPlayerContextProps {
   nextSong: () => void // 다음 곡 재생
   prevSong: () => void // 이전 곡 재생
   setCurrentSongIndex: (index: number) => void // 특정 곡을 바로 재생
+  isPlaying: boolean // 현재 재생 여부 (true = 재생 중, false = 정지)
+  togglePlay: () => void // 플레이/정지 토글
+  setInstance: (player: YouTubePlayer) => void // YouTube 플레이어 인스턴스 저장
 }
 
 const MusicPlayerContext = createContext<MusicPlayerContextProps | undefined>(
@@ -28,8 +32,8 @@ const MusicPlayerContext = createContext<MusicPlayerContextProps | undefined>(
 export function MusicPlayerProvider({ children }: { children: ReactNode }) {
   const [playlist, setPlaylist] = useState<Song[]>([])
   const [currentIndex, setCurrentIndex] = useState<number>(-1)
-
-  console.log(playlist)
+  const [isPlaying, setIsPlaying] = useState<boolean>(true)
+  const [instance, setInstance] = useState<YouTubePlayer | null>(null)
 
   // 현재 재생 중인 곡 정보
   const currentSong =
@@ -70,6 +74,21 @@ export function MusicPlayerProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  // 플레이/정지 토글 기능
+  const togglePlay = () => {
+    setIsPlaying((prev) => {
+      const next = !prev
+      if (instance) {
+        if (next) {
+          instance.playVideo() // YouTube 플레이어 재생
+        } else {
+          instance.pauseVideo() // YouTube 플레이어 정지
+        }
+      }
+      return next
+    })
+  }
+
   return (
     <MusicPlayerContext.Provider
       value={{
@@ -81,6 +100,9 @@ export function MusicPlayerProvider({ children }: { children: ReactNode }) {
         nextSong,
         prevSong,
         setCurrentSongIndex,
+        isPlaying,
+        togglePlay,
+        setInstance,
       }}
     >
       {children}

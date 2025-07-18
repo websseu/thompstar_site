@@ -22,7 +22,7 @@ interface MusicListProps {
 }
 
 export default function MusicList({ chartData }: MusicListProps) {
-  const { addToTopList } = useMusicPlayer()
+  const { addToTopList, currentSong } = useMusicPlayer()
 
   const handleMusicClick = (item: MusicChartItem) => {
     if (item.youtubeID) {
@@ -39,16 +39,21 @@ export default function MusicList({ chartData }: MusicListProps) {
     <ul className='border-t'>
       {chartData.map((item) => {
         const rankChange = getSimpleRankChange(item)
+        const isCurrentPlaying = item.youtubeID === currentSong?.youtubeID
 
         return (
           <li
             key={item.ranking}
-            className='music__list group'
+            className='music__list group cursor-pointer'
             onClick={() => handleMusicClick(item)}
           >
             <div className='music__image'>
               <Image src={item.image} width={80} height={80} alt={item.title} />
-              <div className='bg group-hover:opacity-100'>
+              <div
+                className={`bg group-hover:opacity-100 ${
+                  isCurrentPlaying ? 'opacity-100 bg-red-500/70' : ''
+                }`}
+              >
                 <CirclePlay />
               </div>
             </div>

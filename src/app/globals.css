@@ -132,7 +132,7 @@
     @apply max-w-4xl mx-auto px-6;
   }
   .footer__container {
-    @apply max-w-4xl mx-auto px-6 py-4 mt-6;
+    @apply max-w-4xl mx-auto px-6 py-4 mt-6 font-nanum;
   }
   .admin__container {
     @apply max-w-[2000px] mx-auto px-6;

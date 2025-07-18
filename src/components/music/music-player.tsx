@@ -3,7 +3,13 @@
 import React from 'react'
 import YouTube from 'react-youtube'
 import { useMusicPlayer } from '@/context/music-context'
-import { StepBack, StepForward, CirclePlay, ListMusic } from 'lucide-react'
+import {
+  StepBack,
+  StepForward,
+  CirclePlay,
+  CirclePause,
+  ListMusic,
+} from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 const defaultOpts = {
@@ -15,7 +21,14 @@ const defaultOpts = {
 }
 
 export default function MusicPlayer() {
-  const { currentSong, nextSong, prevSong } = useMusicPlayer()
+  const {
+    currentSong,
+    nextSong,
+    prevSong,
+    isPlaying,
+    togglePlay,
+    setInstance,
+  } = useMusicPlayer()
   const router = useRouter()
 
   if (!currentSong) return null
@@ -27,10 +40,12 @@ export default function MusicPlayer() {
         <YouTube
           videoId={currentSong.youtubeID}
           opts={defaultOpts}
+          onReady={(event) => setInstance(event.target)}
           onEnd={nextSong}
         />
       </div>
 
+      {/* 뮤직 컨트롤 */}
       <div className='music__control'>
         <div className='left'>
           <p>{currentSong.title}</p>
@@ -40,8 +55,16 @@ export default function MusicPlayer() {
           <button onClick={prevSong} className='btn'>
             <StepBack className='w-6 h-6' />
           </button>
-          <button className='btn'>
-            <CirclePlay className='w-7 h-7' />
+          <button
+            className='btn'
+            onClick={togglePlay}
+            aria-label={isPlaying ? '일시정지' : '재생'}
+          >
+            {isPlaying ? (
+              <CirclePause className='w-7 h-7' />
+            ) : (
+              <CirclePlay className='w-7 h-7' />
+            )}
           </button>
           <button onClick={nextSong} className='btn'>
             <StepForward className='w-6 h-6' />

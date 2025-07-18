@@ -4,11 +4,13 @@ import { useMusicPlayer } from '@/context/music-context'
 import { CirclePlay } from 'lucide-react'
 
 export default function MusicMylist() {
-  const { playlist, setCurrentSongIndex } = useMusicPlayer()
+  const { playlist, setCurrentSongIndex, currentSong } = useMusicPlayer()
 
   return (
     <ul className='border-t'>
       {playlist.map((item, index) => {
+        const isCurrentPlaying = item.youtubeID === currentSong?.youtubeID
+
         return (
           <li
             key={index}
@@ -17,7 +19,11 @@ export default function MusicMylist() {
           >
             <div className='music__image'>
               <Image src={item.image} width={80} height={80} alt={item.title} />
-              <div className='bg group-hover:opacity-100'>
+              <div
+                className={`bg group-hover:opacity-100 ${
+                  isCurrentPlaying ? 'opacity-100 bg-red-500/70' : ''
+                }`}
+              >
                 <CirclePlay />
               </div>
             </div>
